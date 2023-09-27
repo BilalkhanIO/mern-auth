@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { error } from "console";
+import userRoutes from "../routes/user.route.js";
 
 dotenv.config();
 
@@ -14,11 +14,13 @@ mongoose
   .then(() => {
     console.log("server is connected");
   })
-  .catch((error) => {
-    console.log(error);
+  .catch((err) => {
+    console.log(err);
   });
 
 //
 app.listen(3000, () => {
   console.log("server is runing...");
 });
+
+app.use("/api/user", userRoutes);
