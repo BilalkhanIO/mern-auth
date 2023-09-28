@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 /*
@@ -15,6 +16,32 @@ import { Link } from "react-router-dom";
   ```
 */
 export default function SignUp() {
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  //handle form data
+  const HandleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    setLoading(false);
+    const data = await res.json();
+    if (data.success === false) {
+     return  setError(true);
+    }
+    setError(false)
+  };
+
   return (
     <>
       {/*
@@ -31,21 +58,26 @@ export default function SignUp() {
             Sign in to your account
           </h2>
         </div>
-
+        {
+         error && <p className="mt-10 text-center text-sm text-red-700">
+            User name or email already exist-- please try  with diffrent
+          </p>
+        }
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form onSubmit={submitHandler} className="space-y-6">
             <div>
               <label
-                htmlFor="user-name"
+                htmlFor="userName"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 User Name
               </label>
               <div className="mt-1">
                 <input
-                  id="username"
-                  name="username"
-                  type="username"
+                  onChange={HandleChange}
+                  id="userName"
+                  name="userName"
+                  type="text"
                   autoComplete="username"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -61,9 +93,10 @@ export default function SignUp() {
               </label>
               <div className="mt-1">
                 <input
+                  onChange={HandleChange}
                   id="name"
                   name="name"
-                  type="name"
+                  type="text "
                   autoComplete="name"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -79,6 +112,7 @@ export default function SignUp() {
               </label>
               <div className="mt-1">
                 <input
+                  onChange={HandleChange}
                   id="email"
                   name="email"
                   type="email"
@@ -100,6 +134,7 @@ export default function SignUp() {
               </div>
               <div className="mt-1">
                 <input
+                  onChange={HandleChange}
                   id="password"
                   name="password"
                   type="password"
@@ -111,17 +146,14 @@ export default function SignUp() {
             </div>
 
             <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign Up
+              <button disabled={loading} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                {loading ? "Signing..." : "Sign up"}
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            have an account? {" "}
+            have an account?{" "}
             <Link
               to="sign-in"
               href="#"
