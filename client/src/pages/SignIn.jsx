@@ -1,5 +1,11 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../store/user/userSlice";
 
 /*
   This example requires some changes to your config:
@@ -17,9 +23,9 @@ import { Link, useNavigate } from "react-router-dom";
 */
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const daspatch = useDispatch();
   //handle form data
   const HandleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -27,21 +33,25 @@ export default function SignIn() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const res = await fetch("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    setLoading(false);
-    const data = await res.json();
-    if (data.success === false) {
-      return setError(true);
+    try {
+      daspatch(signInStart());
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        daspatch(signInFailure(data.message));
+        return;
+      }
+      daspatch(signInSuccess(data));
+      navigate("/");
+    } catch (error) {
+      daspatch(signInFailure(error));
     }
-    setError(false);
-    navigate("/");
   };
 
   return (
@@ -60,11 +70,11 @@ export default function SignIn() {
             Sign in to your account
           </h2>
         </div>
-        {error && (
+      
           <p className="mt-10 text-center text-sm text-red-700">
-            User name or email already exist-- please try with diffrent
+            {error ? error : ''}
           </p>
-        )}
+      
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={submitHandler} className="space-y-6">
             <div>
