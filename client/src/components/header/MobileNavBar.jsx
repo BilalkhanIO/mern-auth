@@ -1,9 +1,11 @@
 import React from "react";
-import { Dialog, Disclosure } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const MobileNavBar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <Dialog
       as="div"
@@ -53,14 +55,22 @@ const MobileNavBar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
                 Profile
               </Link>
             </div>
-            <div className="py-6">
-              <Link
-                to="/sign-in"
-                className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-              >
-                Log in
-              </Link>
-            </div>
+            <Link className="space-y-2 py-6" to="/profile">
+              {currentUser ? (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={currentUser.profilePicture}
+                    className="h-8 w-8 rounded-full object-cover"
+                    alt={`${currentUser.name} profile picture`}
+                  />
+                  {currentUser.name}
+                </div>
+              ) : (
+                <div className="text-sm font-semibold leading-6 text-gray-900">
+                  sign in <span aria-hidden="true">&rarr;</span>
+                </div>
+              )}
+            </Link>
           </div>
         </div>
       </Dialog.Panel>

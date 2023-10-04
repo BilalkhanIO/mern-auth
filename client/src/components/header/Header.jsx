@@ -1,27 +1,14 @@
 import { useState } from "react";
 import { Popover } from "@headlessui/react";
-import {
-  ArrowPathIcon,
-  Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
-} from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  PhoneIcon,
-  PlayCircleIcon,
-} from "@heroicons/react/20/solid";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import MobileNavBar from "./MobileNavBar";
 import { Link } from "react-router-dom";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
     <header className="bg-white sticky">
@@ -69,14 +56,25 @@ export default function Header() {
             Profile
           </Link>
         </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link
-            to="/sign-in"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
-        </div>
+        <Link to="/profile" className="hidden lg:flex lg:flex-1 lg:justify-end">
+          {currentUser ? (
+            <div className="flex justify-center items-center gap-2">
+            <img
+              src={currentUser.profilePicture}
+              className="h-8 w-8 rounded-full object-cover"
+              alt={`${currentUser.name} profile picture`}
+            />
+            {currentUser.name}
+           </div>
+          ) : (
+            <div
+              
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              sign in <span aria-hidden="true">&rarr;</span>
+            </div>
+          )}
+        </Link>
       </nav>
       <MobileNavBar
         mobileMenuOpen={mobileMenuOpen}
