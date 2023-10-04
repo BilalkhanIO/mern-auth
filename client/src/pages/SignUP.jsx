@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 /*
   This example requires some changes to your config:
@@ -37,9 +38,9 @@ export default function SignUp() {
     setLoading(false);
     const data = await res.json();
     if (data.success === false) {
-     return  setError(true);
+      return setError(true);
     }
-    setError(false)
+    setError(false);
   };
 
   return (
@@ -58,11 +59,11 @@ export default function SignUp() {
             Sign in to your account
           </h2>
         </div>
-        {
-         error && <p className="mt-10 text-center text-sm text-red-700">
-            User name or email already exist-- please try  with diffrent
+        {error && (
+          <p className="mt-10 text-center text-sm text-red-700">
+            User name or email already exist-- please try with diffrent
           </p>
-        }
+        )}
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={submitHandler} className="space-y-6">
             <div>
@@ -146,12 +147,15 @@ export default function SignUp() {
             </div>
 
             <div>
-              <button disabled={loading} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              <button
+                disabled={loading}
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
                 {loading ? "Signing..." : "Sign up"}
               </button>
             </div>
           </form>
-
+          <OAuth />
           <p className="mt-10 text-center text-sm text-gray-500">
             have an account?{" "}
             <Link

@@ -6,6 +6,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../store/user/userSlice";
+import OAuth from "../components/OAuth";
 
 /*
   This example requires some changes to your config:
@@ -70,11 +71,11 @@ export default function SignIn() {
             Sign in to your account
           </h2>
         </div>
-      
-          <p className="mt-10 text-center text-sm text-red-700">
-            {error ? error : ''}
-          </p>
-      
+
+        <p className="mt-10 text-center text-sm text-red-700">
+          {error ? error : ""}
+        </p>
+
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={submitHandler} className="space-y-6">
             <div>
@@ -128,6 +129,7 @@ export default function SignIn() {
               </button>
             </div>
           </form>
+          <OAuth />
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Don't have an account?{" "}
