@@ -1,3 +1,4 @@
+import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
@@ -16,22 +17,22 @@ export const updatedUser = async (req, res, next) => {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
           userName: req.body.userName,
+          name: req.body.name,
           email: req.body.email,
           password: req.body.password,
-          profilepicture: req.body.profilepicture,
+          profilePicture: req.body.profilePicture,
         },
       },
       { new: true }
     );
-    const { password, ...rest } = updatedUser._doc;
+    const { password, ...rest } = updateUser._doc;
     res.status(200).json(rest);
-
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
